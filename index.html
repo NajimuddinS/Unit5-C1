@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #EEFAF9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        .form-section, .search-section {
+            margin: 20px 0;
+        }
+        .form-container {
+            text-align: center;
+            max-width: 800px;
+            margin: auto;
+        }
+        input {
+            width: 800px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        select {
+            width: 825px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            width: 825px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .job-card {
+            font-size: large;
+            font-weight: 700;
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        }
+        .job-info {
+            display: flex;
+            align-items: center;
+        }
+        .comp{
+            color:#5CA4A3;
+        }
+        .desc{
+            color: grey;
+            font-size: small;
+            font-weight: 500;
+        }
+        .job-info img {
+            width: 90px;
+            height: 90px;
+            margin-right: 20px;
+        }
+        .job-details {
+            font-size: 18px;
+        }
+        .tags {
+            display: flex;
+            gap: 10px;
+        }
+        .tags span {
+            background-color: #ECF6F5;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #5CA4A3;
+        }
+        .companylogo{
+            border-radius:50%;
+
+        }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script type="text/babel">
+
+function JobApp() {
+    const [job, setJob] = React.useState({
+        company: '',
+        location: '',
+        role: '',
+        level: '',
+        position: '',
+        language: '',
+        contract: '',
+        postedAt: ''
+    });
+
+    const [jobsList, setJobsList] = React.useState([]);
+
+    React.useEffect(() => {
+        const initialJobs = [
+            {
+                company: "Ellette",
+                postedAt: "2021-03-30",
+                location: "American Samoa",
+                role: "Frontend",
+                level: "Junior",
+                contract: "Full Time",
+                position: "Backend Developer",
+                language: "Java"
+            },
+            {
+                company: "Jinny",
+                postedAt: "2021-09-09",
+                location: "Belgium",
+                role: "FullStack",
+                level: "Junior",
+                contract: "Full Time",
+                position: "Junior Frontend Developer",
+                language: "Java"
+            }
+        ];
+
+        if (!localStorage.getItem('jobs')) {
+            localStorage.setItem('jobs', JSON.stringify(initialJobs));
+        }
+
+        fetchListings();
+    }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setJob(prevJob => ({
+            ...prevJob,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+
+        jobs.push(job);
+
+        localStorage.setItem('jobs', JSON.stringify(jobs));
+
+        setJob({
+            company: '',
+            location: '',
+            role: '',
+            level: '',
+            position: '',
+            language: '',
+            contract: '',
+            postedAt: ''
+        });
+
+        alert('Job posted successfully!');
+        fetchListings();
+    };
+
+    const fetchListings = () => {
+        const storedJobs = JSON.parse(localStorage.getItem('jobs')) || [];
+        setJobsList(storedJobs);
+    };
+
+    return (
+        <div className="container">
+        <div class="form-container">
+            <h2>Job Portal</h2>
+            <form className="form-section" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    name="company"
+                    placeholder="Company Name"
+                    value={job.company}
+                    onChange={handleInputChange}
+                    required
+                />
+                <input
+                    type="text"
+                    name="location"
+                    placeholder="Location"
+                    value={job.location}
+                    onChange={handleInputChange}
+                    required
+                />
+                <select
+                    name="role"
+                    value={job.role}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="">Select Role</option>
+                    <option value="Frontend">Frontend</option>
+                    <option value="Backend">Backend</option>
+                    <option value="FullStack">FullStack</option>
+                </select>
+                <select
+                    name="level"
+                    value={job.level}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="">Select Level</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                </select>
+                <input
+                    type="text"
+                    name="position"
+                    placeholder="Position"
+                    value={job.position}
+                    onChange={handleInputChange}
+                    required
+                />
+                <input
+                    type="text"
+                    name="language"
+                    placeholder="Programming Language"
+                    value={job.language}
+                    onChange={handleInputChange}
+                    required
+                />
+                <select
+                    name="contract"
+                    value={job.contract}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="">Select Contract Type</option>
+                    <option value="Full Time">Full Time</option>
+                    <option value="Part Time">Part Time</option>
+                </select>
+                <input
+                    type="date"
+                    name="postedAt"
+                    value={job.postedAt}
+                    onChange={handleInputChange}
+                    required
+                />
+                <button type="submit">Post Job</button>
+            </form>
+
+            <button onClick={fetchListings}>Fetch Listings</button></div>
+
+            <div id="job-listings">
+                {jobsList.length > 0 ? (
+                    jobsList.map((job, index) => (
+                        <div key={index} className="job-card">
+                            <div className="job-info">
+                                <img class="companylogo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThiAZdKD2EMU3ZQMzdkN4n8GI02rxsvSBkWetN1SAHd6UytLEmSXJPbAUNcgUKvUgm5T0&usqp=CAU" alt="Company Logo" />
+                                <div className="job-details">
+                                    <p class="comp">{job.company}</p>
+                                    <h3>{job.position}</h3>
+                                    <p class="desc">{job.postedAt} • {job.contract} • {job.location}</p>
+                                </div>
+                            </div>
+                            <div className="tags">
+                                <span>{job.role}</span>
+                                <span>{job.level}</span>
+                                <span>{job.language}</span>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No job listings available. Please post a job!</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+ReactDOM.render(<JobApp />, document.getElementById('root'));
+</script>
+
+</body>
+</html>
